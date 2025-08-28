@@ -43,7 +43,7 @@ jobs:
 
       # Generate Terraform plan
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
         env:
           GOOGLE_CREDENTIALS: gcp_credentials.json
           TF_VAR_project_prefix: ${{ secrets.PROJECT_PREFIX }}
