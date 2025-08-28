@@ -11,16 +11,16 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./gcp-landing-zone
 
     steps:
       # Checkout code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Setup Terraform
+      - name: "[debug] List files"
+        run: ls -la
+      
+       # Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
