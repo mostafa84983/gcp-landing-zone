@@ -13,3 +13,6 @@ override.tf.json
 # Ignore tfvars files that may contain sensitive data
 *.tfvars
 *.tfvars.json
+# Ignore hashicorp configuration files
+*.hcl
+.terraform.lock.hcl
