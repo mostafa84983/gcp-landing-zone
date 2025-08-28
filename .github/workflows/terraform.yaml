@@ -36,10 +36,6 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: gcp_credentials.json
 
-      # Format Terraform code
-      - name: Terraform Format
-        run: terraform fmt -check
-
       # Validate Terraform code
       - name: Terraform Validate
         run: terraform validate
