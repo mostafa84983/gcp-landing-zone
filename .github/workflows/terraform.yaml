@@ -23,11 +23,15 @@ jobs:
         with:
           terraform_version: 1.5.0
 
+      # Decode base64-encoded GCP service account key
+      - name: Decode GCP Credentials
+        run: echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > gcp_credentials.json
+
       # Initialize Terraform with backend config
       - name: Terraform Init
         run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
         env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          GOOGLE_CREDENTIALS: gcp_credentials.json
 
       # Format Terraform code
       - name: Terraform Format
