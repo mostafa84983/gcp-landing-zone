@@ -11,9 +11,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./gcp-landing-zone
 
     steps:
       # Checkout code
