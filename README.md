@@ -25,7 +25,7 @@ A Terraform-based Google Cloud Platform (GCP) landing zone for creating a secure
 
 ## Setup
 
-1. **Prerequisites**:
+### 1. **Prerequisites**:
 - GCP account with billing account (free tier: $300 credits).
 - GCP Organization (requires verified domain).
 - Terraform v1.5.0+ and gcloud CLI installed.
@@ -33,7 +33,7 @@ A Terraform-based Google Cloud Platform (GCP) landing zone for creating a secure
 - Bootstrap project (e.g., `lz-bootstrap-470415`).
 - Service account with `roles/resourcemanager.projectCreator` and `roles/billing.user` at organization/billing account level.
 
-2. **Bootstrap**:
+### 2. **Bootstrap**:
    ```bash
    cd bootstrap
    terraform init
@@ -41,7 +41,7 @@ A Terraform-based Google Cloud Platform (GCP) landing zone for creating a secure
    ```
    Update `bootstrap/terraform.tfvars` with `bootstrap_project_id`, `region`, `tf_state_bucket`, `log_bucket`. Save `tf_admin_service_account_key` (base64-encoded).
 
-3. **Main Configuration**:
+### 3. **Main Configuration**:
 - Update `terraform.tfvars` with `org_id`, `billing_account_id`, `admin_email`, `tf_state_bucket`, `log_bucket`.
 - Run:
      ```bash
@@ -51,7 +51,7 @@ A Terraform-based Google Cloud Platform (GCP) landing zone for creating a secure
      ```
      Use bootstrapped bucked for `-backend-config`
 
-4. **GitHub Actions**:
+### 4. **GitHub Actions**:
 - Add secrets: `GCP_SA_KEY` (base64-encoded), `PROJECT_PREFIX`, `ORG_ID`, `BILLING_ACCOUNT_ID`, `ADMIN_EMAIL`, `TF_STATE_BUCKET`, `LOG_BUCKET`.
 - Pipeline decodes `GCP_SA_KEY`, runs Terraform commands in `gcp-landing-zone/`.
 
