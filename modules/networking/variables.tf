@@ -8,14 +8,16 @@ variable "service_projects" {
   type        = list(string)
 }
 
+#  Unused but kept for compatibility
 variable "network_name" {
-  description = "Network name (unused but kept for compatibility)"
+  description = "Network name"
   type        = string
   default     = "vpc"
 }
 
+#  Unused but kept for compatibility
 variable "subnets" {
-  description = "Subnets config (unused but kept for compatibility)"
+  description = "Subnets config"
   type        = any
   default     = {}
 }

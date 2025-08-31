@@ -32,16 +32,6 @@ jobs:
     - name: Set up Cloud SDK
       uses: 'google-github-actions/setup-gcloud@v2'
 
-    # NEW: Update backend configuration with state bucket
-    - name: Update backend configuration
-      run: |
-        sed -i 's/bucket = "your-terraform-state-bucket"/bucket = "${{ secrets.STATE_BUCKET_NAME }}"/' main.tf
-
-    - name: Terraform Format Check
-      id: fmt
-      run: terraform fmt -check
-      continue-on-error: true
-
     - name: Terraform Init
       id: init
       run: terraform init -backend-config="bucket=${{ secrets.STATE_BUCKET_NAME }}"
