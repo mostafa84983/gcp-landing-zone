@@ -1,18 +1,20 @@
-# Ignore .terraform files and directories
+# .terraform files and directories
 .terraform*
-# Ignore Terraform state files
+# Terraform state files
 *.tfstate
 *.tfstate.backup
-# Ignore crash logs
+# Crash logs
 crash.log
-# Ignore override files
+# Override files
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
-# Ignore tfvars files that may contain sensitive data
+# tfvars files that may contain sensitive data
 *.tfvars
 *.tfvars.json
-# Ignore hashicorp configuration files
+# Hashicorp configuration files
 *.hcl
 .terraform.lock.hcl
+# Sensitive files
+*.json

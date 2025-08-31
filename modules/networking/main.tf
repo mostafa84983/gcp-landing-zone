@@ -26,7 +26,7 @@ resource "google_compute_subnetwork" "dev_subnet" {
   project       = var.service_projects[0]
   name          = "dev-subnet"
   ip_cidr_range = "10.1.0.0/24"
-  region        = "us-central1"
+  region        = var.default_region
   network       = google_compute_network.dev_vpc.id
   
   # https://cloud.google.com/compute/docs/configure-private-google-access
