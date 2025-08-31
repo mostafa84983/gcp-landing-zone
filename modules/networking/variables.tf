@@ -19,3 +19,9 @@ variable "subnets" {
   type        = any
   default     = {}
 }
+
+variable "default_region" {
+  description = "Default region"
+  type        = string
+  default     = "us-central1"
+}

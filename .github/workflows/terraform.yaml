@@ -1,0 +1,100 @@
+name: 'Terraform GCP Landing Zone'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+
+    - name: Authenticate to Google Cloud
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: Set up Cloud SDK
+      uses: 'google-github-actions/setup-gcloud@v2'
+
+    # NEW: Update backend configuration with state bucket
+    - name: Update backend configuration
+      run: |
+        sed -i 's/bucket = "your-terraform-state-bucket"/bucket = "${{ secrets.STATE_BUCKET_NAME }}"/' main.tf
+
+    - name: Terraform Format Check
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: terraform init -backend-config="bucket=${{ secrets.STATE_BUCKET_NAME }}"
+
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      if: github.event_name == 'pull_request'
+      env:
+        TF_VAR_billing_account_id: ${{ secrets.BILLING_ACCOUNT_ID }}
+        TF_VAR_mgmt_project_id: ${{ secrets.MGMT_PROJECT_ID }}
+        TF_VAR_dev_project_id: ${{ secrets.DEV_PROJECT_ID }}
+      run: terraform plan -no-color -input=false
+      continue-on-error: true
+
+
+    - name: Comment PR
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        script: |
+          const output = `#### Terraform Format 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`terraform\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          *Action: \`${{ github.event_name }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      env:
+        TF_VAR_billing_account_id: ${{ secrets.BILLING_ACCOUNT_ID }}
+        TF_VAR_mgmt_project_id: ${{ secrets.MGMT_PROJECT_ID }}
+        TF_VAR_dev_project_id: ${{ secrets.DEV_PROJECT_ID }}
+      run: terraform apply -auto-approve
