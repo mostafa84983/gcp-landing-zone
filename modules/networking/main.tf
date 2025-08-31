@@ -4,9 +4,6 @@ resource "google_compute_network" "mgmt_vpc" {
   project                 = var.host_project_id
   name                    = "mgmt-vpc"
   auto_create_subnetworks = false
-
-  # https://cloud.google.com/compute/docs/subnetworks
-  description = "Management VPC for shared resources like Cloud SQL, Cloud Storage"
 }
 
 # Development VPC
@@ -15,9 +12,6 @@ resource "google_compute_network" "dev_vpc" {
   project                 = var.service_projects[0]
   name                    = "dev-vpc" 
   auto_create_subnetworks = false
-
-  # https://cloud.google.com/compute/docs/subnetworks
-  description = "Development VPC for compute resources"
 }
 
 # Development subnet
@@ -31,9 +25,6 @@ resource "google_compute_subnetwork" "dev_subnet" {
   
   # https://cloud.google.com/compute/docs/configure-private-google-access
   private_ip_google_access = true
-
-  # https://cloud.google.com/compute/docs/subnetworks#subnetworks_and_routes
-  description = "Development subnet for compute resources"
 }
 
 # Basic firewall - allow internal traffic in dev
@@ -51,9 +42,6 @@ resource "google_compute_firewall" "dev_allow_internal" {
   
   # https://cloud.google.com/compute/docs/subnetworks#subnetworks_and_routes
   source_ranges = [google_compute_subnetwork.dev_subnet.ip_cidr_range]
-
-  # https://cloud.google.com/compute/docs/firewalls-rules#default_firewall_rules
-  description = "Allow internal traffic in dev"
 }
 
 # Allow SSH from anywhere (for demo purposes)
@@ -71,7 +59,5 @@ resource "google_compute_firewall" "dev_allow_ssh" {
   
   # https://cloud.google.com/compute/docs/subnetworks#subnetworks_and_routes
   source_ranges = ["0.0.0.0/0"]
-
-  # https://cloud.google.com/compute/docs/firewalls-rules#default_firewall_rules
-  description = "Allow SSH from anywhere (for demo purposes)"
 }
+
