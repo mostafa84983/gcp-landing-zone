@@ -1,8 +1,9 @@
+# Configure the Google Cloud Provider
 provider "google" {
   region = var.default_region
 }
 
-# Configure the Google Cloud Provider
+# Configure Terraform to store state in GCS
 terraform {
   backend "gcs" {
     prefix = "terraform/state"
@@ -13,10 +14,16 @@ terraform {
 module "mgmt_project" {
   source = "./modules/project-factory"
   
+  # Project name
   project_name    = "Management"
+  
+  # Project ID
   project_id      = var.mgmt_project_id
+  
+  # Billing account ID
   billing_account = var.billing_account_id
   
+  # Services to enable
   services = [
     "compute.googleapis.com",
     "iam.googleapis.com",
@@ -25,14 +32,20 @@ module "mgmt_project" {
   ]
 }
 
-# Create dev project
+# Create development project
 module "dev_project" {
   source = "./modules/project-factory"
   
+  # Project name
   project_name    = "Development"
+  
+  # Project ID
   project_id      = var.dev_project_id
+  
+  # Billing account ID
   billing_account = var.billing_account_id
   
+  # Services to enable
   services = [
     "compute.googleapis.com",
     "iam.googleapis.com",
@@ -44,9 +57,13 @@ module "dev_project" {
 module "networking" {
   source = "./modules/networking"
   
+  # Host project ID
   host_project_id  = module.mgmt_project.project_id
+  
+  # Service projects
   service_projects = [module.dev_project.project_id]
   
+  # Dependencies
   depends_on = [module.mgmt_project, module.dev_project]
 }
 
@@ -54,9 +71,13 @@ module "networking" {
 module "iam" {
   source = "./modules/iam"
   
+  # Management project ID
   mgmt_project_id = module.mgmt_project.project_id
+  
+  # Development project ID
   dev_project_id  = module.dev_project.project_id
   
+  # Dependencies
   depends_on = [module.mgmt_project, module.dev_project]
 }
 
@@ -64,8 +85,12 @@ module "iam" {
 module "monitoring" {
   source = "./modules/monitoring"
   
+  # Management project ID
   mgmt_project_id = module.mgmt_project.project_id
+  
+  # Development project ID
   dev_project_id  = module.dev_project.project_id
   
+  # Dependencies
   depends_on = [module.mgmt_project, module.dev_project]
 }

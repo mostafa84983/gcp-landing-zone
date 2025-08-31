@@ -19,7 +19,6 @@ variable "default_region" {
   default     = "us-central1"
 }
 
-# Keep these for compatibility even if unused
 variable "network_name" {
   description = "Network name"
   type        = string

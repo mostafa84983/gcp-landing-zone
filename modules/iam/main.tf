@@ -3,6 +3,8 @@ resource "google_service_account" "dev_sa" {
   project      = var.dev_project_id
   account_id   = "dev-compute"
   display_name = "Development Service Account"
+
+  # See https://cloud.google.com/compute/docs/access/service-accounts
 }
 
 # Service account for monitoring
@@ -10,6 +12,8 @@ resource "google_service_account" "monitoring_sa" {
   project      = var.mgmt_project_id
   account_id   = "monitoring"
   display_name = "Monitoring Service Account"
+
+  # See https://cloud.google.com/logging/docs/access-control
 }
 
 # Dev SA permissions
@@ -17,12 +21,16 @@ resource "google_project_iam_member" "dev_sa_compute" {
   project = var.dev_project_id
   role    = "roles/compute.instanceAdmin"
   member  = "serviceAccount:${google_service_account.dev_sa.email}"
+
+  # See https://cloud.google.com/compute/docs/access/iam
 }
 
 resource "google_project_iam_member" "dev_sa_logging" {
   project = var.dev_project_id
   role    = "roles/logging.logWriter"
   member  = "serviceAccount:${google_service_account.dev_sa.email}"
+
+  # See https://cloud.google.com/logging/docs/access-control
 }
 
 # Monitoring SA permissions
@@ -30,4 +38,6 @@ resource "google_project_iam_member" "monitoring_sa_logging" {
   project = var.mgmt_project_id
   role    = "roles/logging.admin"
   member  = "serviceAccount:${google_service_account.monitoring_sa.email}"
+
+  # See https://cloud.google.com/logging/docs/access-control
 }
