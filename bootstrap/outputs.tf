@@ -1,16 +1,9 @@
-output "tf_state_bucket" {
-  value = google_storage_bucket.tf_state.name
+output "state_bucket_name" {
+  description = "Name of the Terraform state bucket"
+  value       = google_storage_bucket.terraform_state.name
 }
 
-output "log_bucket" {
-  value = google_storage_bucket.log_bucket.name
-}
-
-output "tf_admin_service_account_email" {
-  value = google_service_account.tf_admin.email
-}
-
-output "tf_admin_service_account_key" {
-  value     = google_service_account_key.tf_admin_key.private_key
-  sensitive = true
+output "state_bucket_url" {
+  description = "URL of the Terraform state bucket"
+  value       = google_storage_bucket.terraform_state.url
 }

@@ -1,15 +1,10 @@
+variable "project_name" {
+  description = "Project display name"
+  type        = string
+}
+
 variable "project_id" {
   description = "Project ID"
-  type        = string
-}
-
-variable "project_name" {
-  description = "Project name"
-  type        = string
-}
-
-variable "org_id" {
-  description = "Organization ID"
   type        = string
 }
 
@@ -18,7 +13,8 @@ variable "billing_account" {
   type        = string
 }
 
-variable "enable_apis" {
-  description = "List of APIs to enable"
+variable "services" {
+  description = "APIs to enable"
   type        = list(string)
+  default     = []
 }

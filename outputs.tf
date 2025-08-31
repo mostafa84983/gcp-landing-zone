@@ -2,18 +2,18 @@ output "mgmt_project_id" {
   value = module.mgmt_project.project_id
 }
 
-output "prod_project_id" {
-  value = module.prod_project.project_id
-}
-
 output "dev_project_id" {
   value = module.dev_project.project_id
 }
 
-output "vpc_name" {
-  value = module.networking.vpc_name
+output "networks" {
+  value = module.networking.network_name
 }
 
-output "service_account_email" {
-  value = module.iam.service_account_email
+output "service_accounts" {
+  value = module.iam.service_accounts
+}
+
+output "logging_bucket" {
+  value = module.monitoring.logging_bucket_name
 }

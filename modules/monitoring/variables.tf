@@ -1,9 +1,9 @@
-variable "project_id" {
-  description = "Project ID"
+variable "mgmt_project_id" {
+  description = "Management project ID"
   type        = string
 }
 
-variable "sink_destination" {
-  description = "Destination for logging sink (e.g., GCS bucket)"
+variable "dev_project_id" {
+  description = "Development project ID"
   type        = string
 }

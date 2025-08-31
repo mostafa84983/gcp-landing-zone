@@ -3,18 +3,19 @@ variable "bootstrap_project_id" {
   type        = string
 }
 
-variable "region" {
-  description = "GCP region"
+variable "state_bucket_name" {
+  description = "Name for the Terraform state bucket"
+  type        = string
+}
+
+variable "default_region" {
+  description = "Default region for resources"
   type        = string
   default     = "us-central1"
 }
 
-variable "tf_state_bucket" {
-  description = "GCS bucket for Terraform state"
+variable "bucket_location" {
+  description = "Location for the state bucket"
   type        = string
-}
-
-variable "log_bucket" {
-  description = "GCS bucket for centralized logs"
-  type        = string
+  default     = "US"
 }

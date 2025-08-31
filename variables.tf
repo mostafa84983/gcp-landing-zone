@@ -1,36 +1,33 @@
-variable "project_prefix" {
-  description = "Prefix for project IDs"
-  type        = string
-  default     = "lz"
-}
-
-variable "org_id" {
-  description = "GCP Organization ID"
-  type        = string
-}
-
 variable "billing_account_id" {
-  description = "GCP Billing Account ID"
+  description = "Billing account ID"
   type        = string
 }
 
-variable "region" {
-  description = "GCP region for resources"
+variable "mgmt_project_id" {
+  description = "Management project ID"
+  type        = string
+}
+
+variable "dev_project_id" {
+  description = "Development project ID"
+  type        = string
+}
+
+variable "default_region" {
+  description = "Default region"
   type        = string
   default     = "us-central1"
 }
 
-variable "admin_email" {
-  description = "Email for admin user"
+# Keep these for compatibility even if unused
+variable "network_name" {
+  description = "Network name"
   type        = string
+  default     = "vpc"
 }
 
-variable "tf_state_bucket" {
-  description = "GCS bucket for Terraform state"
-  type        = string
-}
-
-variable "log_bucket" {
-  description = "GCS bucket for centralized logs"
-  type        = string
+variable "subnets" {
+  description = "Subnet configuration"
+  type        = any
+  default     = {}
 }

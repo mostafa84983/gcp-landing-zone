@@ -1,14 +1,9 @@
-variable "project_id" {
-  description = "Project ID"
+variable "mgmt_project_id" {
+  description = "Management project ID"
   type        = string
 }
 
-variable "service_account_id" {
-  description = "Service account ID"
-  type        = string
-}
-
-variable "admin_email" {
-  description = "Admin user email"
+variable "dev_project_id" {
+  description = "Development project ID"  
   type        = string
 }

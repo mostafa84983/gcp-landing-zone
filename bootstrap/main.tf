@@ -1,72 +1,46 @@
 provider "google" {
   project = var.bootstrap_project_id
-  region  = var.region
+  region  = var.default_region
 }
 
-# Create GCS bucket for Terraform state
-resource "google_storage_bucket" "tf_state" {
-  name          = var.tf_state_bucket
-  location      = var.region
-  force_destroy = false
-
+# Create bucket for Terraform state
+resource "google_storage_bucket" "terraform_state" {
+  name     = var.state_bucket_name
+  location = var.bucket_location
+  project  = var.bootstrap_project_id
+  
+  uniform_bucket_level_access = true
+  
   versioning {
     enabled = true
   }
-
-  uniform_bucket_level_access = true
-}
-
-# Create GCS bucket for logs
-resource "google_storage_bucket" "log_bucket" {
-  name          = var.log_bucket
-  location      = var.region
-  force_destroy = false
-
-  versioning {
-    enabled = true
+  
+  lifecycle_rule {
+    condition {
+      age = 30
+    }
+    action {
+      type = "Delete"
+    }
   }
-
-  uniform_bucket_level_access = true
+  
+  # Prevent accidental deletion
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
-# Create service account for Terraform
-resource "google_service_account" "tf_admin" {
-  account_id   = "tf-state-admin"
-  display_name = "Terraform State Admin"
-}
-
-# Grant service account access to state bucket
-resource "google_storage_bucket_iam_binding" "tf_state_access" {
-  bucket = google_storage_bucket.tf_state.name
-  role   = "roles/storage.admin"
-  members = [
-    "serviceAccount:${google_service_account.tf_admin.email}"
-  ]
-}
-
-# Grant service account access to log bucket
-resource "google_storage_bucket_iam_binding" "log_bucket_access" {
-  bucket = google_storage_bucket.log_bucket.name
-  role   = "roles/storage.admin"
-  members = [
-    "serviceAccount:${google_service_account.tf_admin.email}"
-  ]
-}
-
-# Grant service account project-level permissions
-resource "google_project_iam_binding" "tf_admin_roles" {
+# Enable required APIs for the bootstrap project
+resource "google_project_service" "bootstrap_apis" {
   for_each = toset([
-    "roles/compute.networkAdmin",
-    "roles/iam.serviceAccountAdmin",
-    "roles/logging.admin"
-    # "roles/owner"
+    "cloudresourcemanager.googleapis.com",
+    "cloudbilling.googleapis.com",
+    "storage.googleapis.com",
+    "iam.googleapis.com"
   ])
+  
   project = var.bootstrap_project_id
-  role    = each.key
-  members = ["serviceAccount:${google_service_account.tf_admin.email}"]
-}
-
-# Export service account key for GitHub Actions
-resource "google_service_account_key" "tf_admin_key" {
-  service_account_id = google_service_account.tf_admin.name
+  service = each.value
+  
+  disable_on_destroy = false
 }
